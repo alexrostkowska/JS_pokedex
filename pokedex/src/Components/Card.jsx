@@ -1,3 +1,4 @@
+import axios from "axios";
 import React from "react";
 import { useEffect, useState } from "react";
 import { Modal, Button } from "react-bootstrap";
@@ -15,6 +16,13 @@ const Card = ({pokemon, loading}) => {
     const [pokeWeight, setPokeWeight] = useState('');
     const [pokeImg, setPokeImg] = useState();
     const [searchInput, setSearchInput] = useState('');
+    const [question,setQuestion] = useState('');
+    const [answers,setAns] = useState(["","","",""]);
+    const [correctAnswer,setCorrectAns] = useState("");
+    const [message, setmessage] = useState('');
+
+
+
 
     const openPokeInfo = async(res) => {
         setPokeName(res.name);
@@ -22,10 +30,48 @@ const Card = ({pokemon, loading}) => {
         setPokeWeight(res.weight);
         setPokeImg(res.sprites.front_default);
         handleShow();
+        setmessage("");
+        setCorrectAns("");
+        setQuestion("");
+        setAns(["","","",""]);
+        console.log(answers);
 
     }
+    
+    const qapi = axios.create({baseURL:'https://the-trivia-api.com/api/questions?limit=1&region=PL'})
+    function getQuiz(){
+        qapi.get('/').then(res =>{
+            console.log(res.data);
+            setQuestion(res.data[0].question); 
+            const ans = res.data[0].incorrectAnswers;
+            setCorrectAns(res.data[0].correctAnswer);
+            ans.push(res.data[0].correctAnswer);
+            ans.sort();
+            setAns(ans);
+            console.log("Question:"+question);
+            console.log("Answers:"+answers);
 
-
+        })
+        return( 
+            <div>
+                <p>{question}</p>
+            <button onClick={()=>checkAnswer(answers[0])}>{answers[0]}</button>
+            <button onClick={()=>checkAnswer(answers[1])}>{answers[1]}</button>
+            <button onClick={()=>checkAnswer(answers[2])}>{answers[2]}</button>
+            <button onClick={()=>checkAnswer(answers[3])}>C{answers[3]}</button>
+            </div>
+        );
+    
+    }
+    function checkAnswer(ans){
+        console.log("Answer choosed is: "+ans)
+        if(ans == correctAnswer){
+            setmessage('Correct! Cought pokemon is now in your cart!');
+        // add to jsonserver
+        }else{
+            setmessage("Incorrect! Try catching another pokemon.");
+          }
+      } 
     return(
         <>
             <Modal show={showModal} onHide={handleClose}
@@ -44,6 +90,17 @@ const Card = ({pokemon, loading}) => {
                     <p>
                         Weight : {pokeWeight}
                     </p>
+                    <button onClick={getQuiz}>Collect Pokemon</button>
+                    {question!== "" && <p>{question}</p>}
+                    {answers[0] !="" && <button onClick={()=>checkAnswer(answers[0])}>{answers[0]}</button>}
+                    {answers[1] !="" && <button onClick={()=>checkAnswer(answers[1])}>{answers[1]}</button>}
+                    {answers[2] !="" && <button onClick={()=>checkAnswer(answers[2])}>{answers[2]}</button>}
+                    {answers[3] !="" && <button onClick={()=>checkAnswer(answers[3])}>{answers[3]}</button>}
+                    {message!== "" && <p>{message}</p>}
+
+
+
+
                     
                 </Modal.Body>
             </Modal>
