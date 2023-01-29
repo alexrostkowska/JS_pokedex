@@ -1,22 +1,17 @@
 import React from "react";
-import Navbar from 'react-bootstrap/Navbar';
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Card from "./Card";
 
 import './style.css'
-import logo from '../poke-logo.jpeg';
 
-const Main = () => {
+const Pokedex = () => {
     const [pokeData , setPokeData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [url, setUrl] = useState("https://pokeapi.co/api/v2/pokemon/");
     const [nextUrl, setNextUrl] = useState();
     const [prevUrl, setPrevUrl] = useState();
     const [disable, setDisable] = React.useState(true);
-
 
     const pokeFunc = async() => {
         const res = await axios.get(url);
@@ -35,11 +30,10 @@ const Main = () => {
             setDisable(true);
         }
     }
-
     const getPokemonData = async(res) => {
         res.map(async(item)=>{
             const result =  await axios.get(item.url);
-            // console.log("MAP DATA", result.data);
+            // console.log("data", result.data);
             setPokeData(state => {
                 state = [...state,result.data]
                 state.sort((a,b) => a.id>b.id?1:-1)
@@ -48,29 +42,12 @@ const Main = () => {
         })
     }
 
-
     useEffect(() => {
         pokeFunc()
     }, [url])
 
-    return(
+    return (
         <>
-            
-            <div className="navbar navbar-dark bg-dark">
-            <Container>
-              <Navbar.Brand href="home">
-                <a className="navbar-brand poke-nav" href="#">
-                    <img src={logo} width="40" height="40" className="d-inline-block align-top" alt=""/>&nbsp;
-                    Poke App
-                </a>
-              </Navbar.Brand>
-              <Nav className="me-auto">
-                <Nav.Link href="/home">Home</Nav.Link>
-                <Nav.Link href="/pokedex">My Pokemons</Nav.Link>
-              </Nav>
-            </Container>
-          </div>
-
             <div className="container">
                 <Card pokemon={pokeData} loading={loading}></Card>
                 <div className="btn-div">
@@ -87,6 +64,8 @@ const Main = () => {
             </div>
         </>
     )
-};
 
-export default Main;
+
+}
+
+export default Pokedex;
