@@ -83,7 +83,6 @@ const Main = () => {
                         setUrl(nextUrl)
                     }}>Next</button>
                 </div>
-                
             </div>
         </>
     )
