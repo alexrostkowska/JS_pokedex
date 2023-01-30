@@ -20,15 +20,19 @@ const Card = ({pokemon, loading}) => {
     const [answers,setAns] = useState(["","","",""]);
     const [correctAnswer,setCorrectAns] = useState("");
     const [message, setmessage] = useState('');
+    const [id, setid] = useState('');
+
 
 
 
 
     const openPokeInfo = async(res) => {
+        console.log(res.id);
         setPokeName(res.name);
         setPokeHeight(res.height);
         setPokeWeight(res.weight);
         setPokeImg(res.sprites.front_default);
+        setid(res.id);
         handleShow();
         setmessage("");
         setCorrectAns("");
@@ -63,10 +67,19 @@ const Card = ({pokemon, loading}) => {
         );
     
     }
+    const https = require('https');
+
     function checkAnswer(ans){
         console.log("Answer choosed is: "+ans)
         if(ans == correctAnswer){
             setmessage('Correct! Cought pokemon is now in your cart!');
+            
+            const qapi = axios.post(' http://localhost:3004/pokemons',{pokemon:id}, {
+                httpsAgent: new https.Agent({
+                  rejectUnauthorized: false
+                })
+              }).then(response=>console.log(response.data))
+
         // add to jsonserver
         }else{
             setmessage("Incorrect! Try catching another pokemon.");

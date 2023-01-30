@@ -1,3 +1,16 @@
 {
-    "pokemons":[{"id":1},{"id":5}]
+  "pokemons": [
+    {
+      "id": 1,
+      "pokemon": 1
+    },
+    {
+      "id": 2,
+      "pokemon": 5
+    },
+    {
+      "pokemon": 1,
+      "id": 3
+    }
+  ]
 }
